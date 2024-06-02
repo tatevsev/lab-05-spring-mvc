@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.cydeo.service.impl.ProductServiceImpl.PRODUCT_LIST;
 
@@ -25,7 +26,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItem> retrieveCartDetail(UUID cartId) {
         // todo implement method using stream
-        return new ArrayList<>();
+
+        return   CART_LIST.stream()
+                .filter(cart -> cart.getId().equals(cartId))
+                .findAny().get().getCartItemList();
+
+
     }
 
     @Override
@@ -60,12 +66,18 @@ public class CartServiceImpl implements CartService {
         cart1.setId(UUID.randomUUID());
         cart1.setCartItemList(cartItemList1);
 
-        BigDecimal cart1TotalAmount = BigDecimal.ZERO;
+//        BigDecimal cart1TotalAmount = BigDecimal.ZERO;
+//
+//        // todo change to stream
+//        for (CartItem cartItem : cartItemList1) {
+//            cart1TotalAmount = cart1TotalAmount.add(cartItem.getTotalAmount());
+//        }
 
-        // todo change to stream
-        for (CartItem cartItem : cartItemList1) {
-            cart1TotalAmount = cart1TotalAmount.add(cartItem.getTotalAmount());
-        }
+
+        BigDecimal cart1TotalAmount = cartItemList1.stream()
+                .map(cartItem -> cartItem.getTotalAmount())
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
 
         cart1.setCartTotalAmount(cart1TotalAmount);
 
@@ -74,12 +86,17 @@ public class CartServiceImpl implements CartService {
         cart2.setId(UUID.randomUUID());
         cart2.setCartItemList(cartItemList2);
 
-        BigDecimal cart2TotalAmount = BigDecimal.ZERO;
+//        BigDecimal cart2TotalAmount = BigDecimal.ZERO;
+//
+//        // todo change to stream
+//        for (CartItem cartItem : cartItemList2) {
+//            cart2TotalAmount = cart2TotalAmount.add(cartItem.getTotalAmount());
+//        }
 
-        // todo change to stream
-        for (CartItem cartItem : cartItemList2) {
-            cart2TotalAmount = cart2TotalAmount.add(cartItem.getTotalAmount());
-        }
+
+        BigDecimal cart2TotalAmount = cartItemList2.stream()
+                        .map(cartItem -> cartItem.getTotalAmount())
+                                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
 
         cart2.setCartTotalAmount(cart2TotalAmount);
 
